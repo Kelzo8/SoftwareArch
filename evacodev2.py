@@ -10,6 +10,10 @@ country_totals = {}
 yearly_totals = {}
 country_selected = input("country: ")
 
+short = 0 
+standard = 0 
+long = 0
+
 for eva in eva_data:
     date_text = eva.get("date")
     duration_text = eva.get("duration")
@@ -28,6 +32,14 @@ for eva in eva_data:
     
     yearly_totals[year] = yearly_totals.get(year, 0.0) + duration_hours
 
+    if duration_hours < 4:
+        short += 1
+    elif duration_hours < 7:
+        standard += 1
+    else:
+        long += 1
+
+
     records.append((date, duration_hours))
 
 records.sort(key=lambda record: record[0])
@@ -44,6 +56,14 @@ for date, duration_hours in records:
 if country_selected in country_totals:
     total_for_country = country_totals[country_selected]
     print(f"Total EVA duration for {country_selected}: {total_for_country:.0f} hours")
+
+total_evas = short + standard + long
+
+print(f"Short: {short} ({short / total_evas * 100:.1f}%)")
+print(f"Standard: {standard} ({standard / total_evas * 100:.1f}%)")
+print(f"Long: {long} ({long / total_evas * 100:.1f}%)")
+
+
 
 plt.figure()
 plt.plot(dates, cumulative_hours)
