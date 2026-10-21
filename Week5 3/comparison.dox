@@ -1,0 +1,23 @@
+Comparing the Four Greeting Programs
+
+I used the same basic design in Python, C, C++ and Java. The program reads a name and style, generates a greeting, then displays it. All four versions have friendly, formal and pirate styles. The parts of the design are similar, although each language expresses them differently.
+
+Ideas that carried across
+
+All four versions separate reading input, choosing and generating a greeting, and displaying the result. They reject a blank name and an unknown style. The tests call the greeting code directly or use fake input and output, so they do not need an interactive terminal.
+
+Differences between the languages
+
+Python uses a Protocol to describe the greeting style. Any object with the right generate method can be used, so a new class does not need to inherit from a base class.
+
+C has no classes. I used a struct containing a style name and a function pointer. The function pointer gives each style the same calling contract. The greeting writes its result into a buffer supplied by the caller, which makes the buffer's ownership clear.
+
+C++ uses an abstract base class for greeting styles. The application holds references to its input and output components. The style objects are stored with shared pointers. Java uses interfaces for the greeting, input and output contracts, and a map to connect style names with greeting objects. Java manages object memory, while C++ makes ownership choices visible in the code.
+
+Adding a style
+
+The pirate greeting shows how the design can be extended. Each language needs the new greeting implementation and a registration entry so the application can offer it. The selection and output flow stays the same. This is the main benefit of the Open/Closed Principle in this example.
+
+The design also adds files, contracts and setup that a one-line greeting would not need. That extra structure would be too much for a real Hello World program. It is useful for this exercise because it makes testing and extension easier to demonstrate. A design principle can also be overused. For example, a plugin loader or a factory hierarchy for three fixed greetings would add more complexity than value. A short style table is enough here.
+
+The C version uses a caller-owned output buffer. Its generator reports when the message does not fit. Build, run and test commands are in the README files for each lesson.

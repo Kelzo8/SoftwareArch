@@ -1,0 +1,75 @@
+Activity 1 questions
+
+What is the program responsible for?
+
+It prints “Hello, World!” to the console.
+
+How many reasons does this tiny program realistically have to change?
+
+Probably one main reason: the required greeting or the way it is displayed changes. For example, someone may ask for different wording or a different output destination. There is no need to split those possibilities into separate components for a one-line program.
+
+Would all five SOLID principles improve this version?
+
+No. The program already has one simple job, so adding interfaces and separate classes would make it longer without solving a real problem. OCP and DIP would only help if the program needed regular extensions or replaceable output. LSP and ISP have little to apply because there are no related implementations or interfaces. The useful lesson is to apply design principles when the expected change justifies the added structure.
+
+What language differences did I notice when compiling or running the programs?
+
+Python runs the source file directly with the Python interpreter. C and C++ need to be compiled into native executables before running. C uses `stdio.h` and `puts`; C++ uses `iostream` and `std::cout`. Java is compiled with `javac` into bytecode, then run by the Java Virtual Machine. The Java source file name must match its public class name, so this file is `HelloWorld.java`.
+
+
+Activity 2 questions
+
+How many responsibilities can I identify?
+
+There are at least three: reading the name, checking it and creating the greeting, then displaying the result or an error. In Python, C++ and Java, greeting creation is in a separate function, but the entry point still handles the console input and output. In C, all three jobs are in main.
+
+Which parts are likely to change independently?
+
+The greeting wording may change independently from the way a name is read. The input source may change independently from the output destination. Validation rules could also change without needing to change how the message is displayed. In this lesson, those parts are not all separated in code, so some changes would require editing the same function.
+
+What would happen if I added ten greeting styles?
+
+The current program only creates one style. Adding many styles would require more conditions or functions to choose and create messages. If those choices stayed in main, it would grow harder to read and maintain. Lesson 3 addresses this by giving each style its own implementation and selecting it through a shared contract.
+
+What if console input came from another source?
+
+The code that reads from the console would have to be replaced. In Lesson 2, reading is directly inside the entry point, so the entry point would need editing. There is no input interface to substitute another source yet.
+
+Which parts are becoming coupled?
+
+Console input, the greeting flow and console output are tied together in the entry point. In C they are all in main. In the other three languages, the greeting function is separate, but main still controls console input and output.
+
+One design weakness I intend to improve
+
+The program depends directly on console input and output, which makes those parts harder to replace and makes a full run awkward to test without typing. Lesson 3 improves this by separating input and presentation behind small contracts and injecting them into the application.
+
+Activity 3 design and change challenge
+
+I used friendly, formal and pirate greetings. Each version still performs the Hello World task. The entry point creates the parts of the application and starts it. The program checks for a blank name and an unknown style.
+
+For the change challenge, I added the pirate style. In Python, the style is in greetings.py and is registered in main.py. In C, pirate_generate is in greeting.c, its declaration is in greeting.h, and main.c adds it to the style table. In C++, PirateGreeting is declared in greetings.hpp, implemented in greetings.cpp and registered in main.cpp. In Java, PirateGreeting.java implements the style contract and Main.java registers it. The application selection logic did not need to change. The registration point does need updating so the program can offer the new style.
+
+The Open/Closed Principle is the most relevant here. The greeting can be extended by adding an implementation, while the application continues to use the same contract. If adding a style required changes throughout the input, greeting and output code, those responsibilities would be too tightly connected.
+
+Testing
+
+The Python tests check friendly and formal messages, the pirate message, a blank name, an unknown style and an application run using fake input and output. The C tests check the greeting functions, blank-name validation and a message that does not fit the output buffer. The C++ tests check the greeting styles, blank-name validation and an application run with fake input and output. The Java tests use fake input and output and check the greeting styles and blank-name validation. The test commands are in each Activity 3 README. None of these tests needs someone to type into the program.
+
+SOLID and object-oriented design
+
+Each greeting implementation has one job: create its message. Input and output are handled by separate components. The application chooses a style and presents its result. This is the Single Responsibility Principle.
+
+The greeting contract lets the application use different styles in the same way. That is the basis for extension and substitution. The input, output and greeting contracts are separate, so each component only depends on the operations it needs. The application receives its input and output components when it is created, rather than creating console input and output itself.
+
+The greeting contract represents a way to generate a message. The input and presenter contracts represent reading and displaying. The application keeps its dependencies together and uses the greeting through its contract. Polymorphism happens when the application calls generate on whichever style was selected. The entry point composes the application with the console adapters and available greeting styles.
+
+Python describes the greeting contract with a Protocol. C uses a function pointer in a style struct and a table of available styles. C++ uses a small abstract base class. Java uses an interface. In C, each greeting writes into a caller-owned buffer and reports whether the complete message fit. This makes the buffer lifetime clear and avoids shared mutable output state.
+
+Build commands for the compiled Lesson 1 and Lesson 2 programs
+
+C, for either lesson: from the relevant lesson folder, run `cc -std=c11 -Wall -Wextra -pedantic hello.c -o hello`, then `./hello`.
+
+C++, for either lesson: from the relevant lesson folder, run `c++ -std=c++17 -Wall -Wextra hello.cpp -o hello`, then `./hello`.
+
+Java, for either lesson: from the relevant lesson folder, run `javac HelloWorld.java`, then `java HelloWorld`.
+
